@@ -64,7 +64,7 @@ class ProductImages(models.Model): #Color/Variants
     created_date = models.DateTimeField(auto_now_add=True)
     variant = models.ForeignKey(Variants, on_delete=models.CASCADE)
     product = models.ForeignKey(Products, on_delete=models.SET_NULL, null=True)
-    image = models.ImageField(upload_to='product/')
+    image = models.ImageField(upload_to='product_images/')
 
     def __str__(self):
         return self.name
