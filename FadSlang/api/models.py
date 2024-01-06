@@ -52,7 +52,7 @@ class ProductStock(models.Model): #Size & Color
     created_date = models.DateTimeField(auto_now_add=True)
     variant = models.ForeignKey(Variants, on_delete=models.SET_NULL, null=True)
     sub_variant = models.ForeignKey(SubVariants, on_delete=models.SET_NULL, null=True)
-    product = models.ForeignKey(Products, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, null=True)
     qty = models.DecimalField(max_digits=15, decimal_places=8, default=0)
 
     def __str__(self):
@@ -62,8 +62,8 @@ class ProductStock(models.Model): #Size & Color
 class ProductImages(models.Model): #Color/Variants
     name = models.CharField(max_length=100)
     created_date = models.DateTimeField(auto_now_add=True)
-    variant = models.ForeignKey(Variants, on_delete=models.CASCADE)
-    product = models.ForeignKey(Products, on_delete=models.SET_NULL, null=True)
+    variant = models.ForeignKey(Variants, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='product_images/')
 
     def __str__(self):
