@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.models import ProductImages, ProductStock, Products, SubVariants, Variants
+from api.models import Categories, ProductImages, ProductStock, Products, SubVariants, Variants
 
 class VariantDetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,5 +46,11 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         image_inst = ProductImages.objects.filter(product=instance)
         serialized = ProductImagesSerializer(image_inst, many=True)
         return serialized.data
+class CategoriesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Categories
+        exclude = ('created_date',)
+        # fields = '__all__'
     
 

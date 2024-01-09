@@ -2,7 +2,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from api.models import Categories, Products, SubVariants, Variants
-from api.products.serializers import ProductDetailSerializer, SubVariantDetailSerializer, VariantDetailSerializer
+from api.products.serializers import CategoriesSerializer, ProductDetailSerializer, SubVariantDetailSerializer, VariantDetailSerializer
 
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -78,6 +78,16 @@ def product(request):
         price_to = data.get('price_to')
         page_no = data.get('page_no')
         items_per_page = data.get('items_per_page')
+        print(
+            search,"search------------>\n",
+            categories,"categories------------>\n",
+            variants,"variants------------>\n",
+            sub_variants,"sub_variants------------>\n",
+            price_from,"price_from------------>\n",
+            price_to,"price_to------------>\n",
+            page_no,"page_no------------>\n",
+            items_per_page,"items_per_page------------>\n",
+        )
 
         query = Q(is_active=True)
         if search:
@@ -116,3 +126,19 @@ def product(request):
         'count':instance.count()
     }
     return Response(response_data, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+@permission_classes((AllowAny,))
+@renderer_classes((JSONRenderer,))
+@transaction.atomic
+def categories(request):
+    instance = Categories.objects.filter()
+    serializer = CategoriesSerializer(instance, many=True)
+    response_data = {
+        'status_code':6000,
+        'message':'Successfully listed categories',
+        'data':serializer.data,
+        'count':instance.count()
+    }
+    return Response(response_data, status=status.HTTP_200_OK)
+
