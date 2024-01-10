@@ -2,7 +2,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from api.models import Categories, Products, SubVariants, Variants
-from api.products.serializers import CategoriesSerializer, ProductDetailSerializer, SubVariantDetailSerializer, VariantDetailSerializer
+from api.products.serializers import CategoriesHomeSerializer, CategoriesSerializer, ProductDetailSerializer, SubVariantDetailSerializer, SubVariantsSerializer, VariantDetailSerializer
 
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -133,7 +133,25 @@ def product(request):
 @transaction.atomic
 def categories(request):
     instance = Categories.objects.filter()
+    sub_variants_instance = SubVariants.objects.filter()
     serializer = CategoriesSerializer(instance, many=True)
+    sub_variants_serializer = SubVariantsSerializer(sub_variants_instance, many=True)
+    response_data = {
+        'status_code':6000,
+        'message':'Successfully listed categories',
+        'categorydata':serializer.data,
+        'subvariantsdata':sub_variants_serializer.data,
+        'count':instance.count()
+    }
+    return Response(response_data, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+@permission_classes((AllowAny,))
+@renderer_classes((JSONRenderer,))
+@transaction.atomic
+def categorieshome(request):
+    instance = Categories.objects.filter().order_by('id')
+    serializer = CategoriesHomeSerializer(instance[:4], many=True)
     response_data = {
         'status_code':6000,
         'message':'Successfully listed categories',
