@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.models import ProductImages, ProductStock, Products, SubVariants, Variants
+from api.models import Categories, ProductImages, ProductStock, Products, SubVariants, Variants
 
 class VariantDetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,5 +46,27 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         image_inst = ProductImages.objects.filter(product=instance)
         serialized = ProductImagesSerializer(image_inst, many=True)
         return serialized.data
+class CategoriesHomeSerializer(serializers.ModelSerializer):
+    images = serializers.SerializerMethodField()
+    class Meta:
+        model = Categories
+        fields = ('id','name','description','images')
+
+    def get_images(self, instance):
+        image=None
+        # image_inst = Products.objects.filter(category=instance).first()
+        # if ProductImages.objects.filter(product=image_inst).exists():
+        #     image = ProductImages.objects.filter(product=image_inst).first().image
+        return image
+class CategoriesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Categories
+        fields = '__all__'
+class SubVariantsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SubVariants
+        fields = '__all__'
     
 
