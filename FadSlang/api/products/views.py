@@ -62,10 +62,11 @@ def create_product(request):
 @transaction.atomic
 def product(request):
     data = request.data
+    count = 0
     if request.method == 'POST': # single product details
         pk = data['id']
         if Products.objects.filter(pk=pk).exists():
-            instance = Products.get(pk=pk)
+            instance = Products.objects.get(pk=pk)
             serializer = ProductDetailSerializer(instance)
         else:
             return Response({'status_code':6001, 'message':'No Product found!'}, status=status.HTTP_200_OK)
@@ -94,6 +95,7 @@ def product(request):
             query |= Q(price_to__lte=price_to)
 
         instance = Products.objects.filter(query)
+        count = instance.count()
         if page_no and items_per_page:
             paginator = Paginator(instance, items_per_page)
             try:
@@ -113,6 +115,6 @@ def product(request):
         'status_code':6000,
         'message':'Successfully listed products',
         'data':serializer.data,
-        'count':instance.count()
+        'count':count
     }
     return Response(response_data, status=status.HTTP_200_OK)
