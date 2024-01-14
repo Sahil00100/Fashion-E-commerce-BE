@@ -9,6 +9,10 @@ class Categories(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Categorie"
+        verbose_name_plural = "Categories"
 
 class Variants(models.Model): #Color
     name = models.CharField(max_length=100)
@@ -18,6 +22,10 @@ class Variants(models.Model): #Color
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Colour"
+        verbose_name_plural = "Colours"
 
 class SubVariants(models.Model): #Size
     name = models.CharField(max_length=100)
@@ -27,6 +35,10 @@ class SubVariants(models.Model): #Size
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Size"
+        verbose_name_plural = "Sizes"
     
 class Products(models.Model):
     name = models.CharField(max_length=100)
@@ -41,10 +53,12 @@ class Products(models.Model):
     sub_variants = models.ManyToManyField(SubVariants, related_name='products', blank=True)
     price = models.DecimalField(max_digits=15, decimal_places=8, default=0)
 
-
-
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Product"
+        verbose_name_plural = "Products"
     
 
 
@@ -89,32 +103,40 @@ class Addresses(models.Model):
     city = models.CharField(max_length=100)
     district = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
+    default = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
     
 class SalesMaster(models.Model):
     status = [
-        (0, 'pending'),
-        (1, 'invoiced'),
-        (2, 'delivered'),
-        (3, 'returned'),
+        (0, 'Pending'),
+        (1, 'Invoiced'),
+        (2, 'Delivered'),
+        (3, 'Returned'),
     ]
-    customer = models.ForeignKey(Customers, on_delete=models.CASCADE)
-    address = models.ForeignKey(Addresses, on_delete=models.SET_NULL, null=True)
+    # customer = models.ForeignKey(Customers, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=100, null=True, blank=True)
+    phone = models.CharField(max_length=100)
+    # address = models.ForeignKey(Addresses, on_delete=models.SET_NULL, null=True)
+    address = models.TextField(null=True, blank=True)
     total_qty = models.DecimalField(max_digits=15, decimal_places=8, default=0)
     total = models.DecimalField(max_digits=15, decimal_places=8, default=0)
     status = models.IntegerField(default=0, choices=status)
 
     def __str__(self):
-        return self.customer.name
+        return self.name
+    
+    class Meta:
+        verbose_name = "Sales Order"
+        verbose_name_plural = "Sales Orderes"
     
 class SalesDetails(models.Model):
     master = models.ForeignKey(SalesMaster, on_delete=models.CASCADE)
-    variant = models.ForeignKey(Variants, on_delete=models.SET_NULL, null=True)
-    sub_variant = models.ForeignKey(SubVariants, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(ProductStock, on_delete=models.SET_NULL, null=True)
     qty = models.DecimalField(max_digits=10, decimal_places=8, default=0)
     price = models.DecimalField(max_digits=15, decimal_places=8, default=0)
 
     def __str__(self):
-        return self.variant.name
+        return self.product.product.name
