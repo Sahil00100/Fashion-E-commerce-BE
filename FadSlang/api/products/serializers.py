@@ -54,9 +54,10 @@ class CategoriesHomeSerializer(serializers.ModelSerializer):
 
     def get_images(self, instance):
         image=None
-        # image_inst = Products.objects.filter(category=instance).first()
-        # if ProductImages.objects.filter(product=image_inst).exists():
-        #     image = ProductImages.objects.filter(product=image_inst).first().image
+        image_inst = Products.objects.filter(category=instance).first()
+        if ProductImages.objects.filter(product=image_inst).exists():
+            image = ProductImages.objects.filter(product=image_inst).first()
+            image = ProductImagesSerializer(image).data
         return image
 class CategoriesSerializer(serializers.ModelSerializer):
 
