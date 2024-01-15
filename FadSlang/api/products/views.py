@@ -71,14 +71,14 @@ def product(request):
         else:
             return Response({'status_code':6001, 'message':'No Product found!'}, status=status.HTTP_200_OK)
     else: # all product list with filter
-        search = data.get('search')
-        categories = data.get('categories', [])
-        variants = data.get('variants', [])
-        sub_variants = data.get('sub_variants', [])
-        price_from = data.get('price_from')
-        price_to = data.get('price_to')
-        page_no = data.get('page_no')
-        items_per_page = data.get('items_per_page')
+        search = request.GET.get('search')
+        categories = request.GET.get('categories', [])
+        variants = request.GET.get('variants', [])
+        sub_variants = request.GET.get('sub_variants', [])
+        price_from = request.GET.get('price_from')
+        price_to = request.GET.get('price_to')
+        page_no = request.GET.get('page_no')
+        items_per_page = request.GET.get('items_per_page')
         print(
             search,"search------------>\n",
             categories,"categories------------>\n",
@@ -89,22 +89,26 @@ def product(request):
             page_no,"page_no------------>\n",
             items_per_page,"items_per_page------------>\n",
         )
+        categories = categories.split(',') if categories else []
+        sub_variants = sub_variants.split(',') if sub_variants else []
+
+
 
         query = Q(is_active=True)
         if search:
-            query |= Q(name__icontains=search) | Q(product_code__icontains=search)
+            query &= Q(name__icontains=search) | Q(product_code__icontains=search)
         if categories:
-            query |= Q(category__in=categories)
+            query &= Q(category__in=categories)
         if variants:
-            query |= Q(variants__id__in=variants)
+            query &= Q(variants__id__in=variants)
         if sub_variants:
-            query |= Q(sub_variants__id__in=sub_variants)
+            query &= Q(sub_variants__id__in=sub_variants)
         if price_from:
-            query |= Q(price__gte=price_from)
+            query &= Q(price__gte=price_from)
         if price_to:
-            query |= Q(price_to__lte=price_to)
+            query &= Q(price_to__lte=price_to)
 
-        instance = Products.objects.filter(query)
+        instance = Products.objects.filter(query).distinct()
         count = instance.count()
         if page_no and items_per_page:
             paginator = Paginator(instance, items_per_page)
