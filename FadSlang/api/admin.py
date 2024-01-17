@@ -1,8 +1,11 @@
 from django.contrib import admin
 
-from api.models import Addresses, Categories, Customers, ProductImages, ProductStock, Products, SalesDetails, SalesMaster, SubVariants, Variants
+from api.models import LandingImage,Addresses, Categories, Customers, ProductImages, ProductStock, Products, SalesDetails, SalesMaster, SubVariants, Variants
 
 # Register your models here.
+
+admin.site.register(LandingImage)
+
 
 class ColorAdmin(admin.ModelAdmin):
     list_display = ('name',)

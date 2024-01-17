@@ -140,3 +140,14 @@ class SalesDetails(models.Model):
 
     def __str__(self):
         return self.product.product.name
+    
+
+class LandingImage (models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='landing_page_images/')
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = "LandingImage"
+        verbose_name_plural = "LandingImages"

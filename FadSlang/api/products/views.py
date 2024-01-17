@@ -63,8 +63,9 @@ def create_product(request):
 def product(request):
     data = request.data
     count = 0
-    if request.method == 'POST': # single product details
-        pk = data['id']
+    if request.method == 'GET' and request.GET.get('id'): # single product details
+        # pk = data['id']
+        pk = request.GET.get('id')
         if Products.objects.filter(pk=pk).exists():
             instance = Products.objects.get(pk=pk)
             serializer = ProductDetailSerializer(instance)
