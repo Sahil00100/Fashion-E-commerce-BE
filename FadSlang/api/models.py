@@ -151,3 +151,13 @@ class LandingImage (models.Model):
     class Meta:
         verbose_name = "LandingImage"
         verbose_name_plural = "LandingImages"
+
+class CaroualImage (models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='carosal_page_images/')
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = "CaroualImage"
+        verbose_name_plural = "CaroualImages"
