@@ -116,9 +116,9 @@ def product(request):
             try:
                 paginated_instance = paginator.page(page_no)
             except PageNotAnInteger:
-                paginated_instance = paginator.page(1)
+                paginated_instance = None#paginator.page(1)
             except EmptyPage:
-                paginated_instance = paginator.page(paginator.num_pages)
+                paginated_instance = None#paginator.page(paginator.num_pages)
         else:
             paginated_instance = instance
 

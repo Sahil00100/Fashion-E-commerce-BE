@@ -1,6 +1,5 @@
 from django.db import models
-
-# Create your models here.
+from PIL import Image
 
 class Categories(models.Model):
     name = models.CharField(max_length=100)
@@ -79,12 +78,25 @@ class ProductImages(models.Model): #Color/Variants
     variant = models.ForeignKey(Variants, on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Products, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='product_images/')
+    # thumbnail = ThumbnailerImageField(upload_to='product_images_thumbnails/', resize_source={'size': None, 'sharpen': True}, blank=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        # Open the original image
+        original_image = Image.open(self.image.path)
+
+        # Set the quality (adjust as needed)
+        quality = 80
+
+        # Save the image with adjusted quality
+        original_image.save(self.image.path, quality=quality)
 
     def __str__(self):
         return self.name
 
 
-# ==================
+# ==================    
 
 
 class Customers(models.Model):
