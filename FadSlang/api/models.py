@@ -1,6 +1,6 @@
 from django.db import models
 from PIL import Image
-
+import os
 class Categories(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
@@ -81,13 +81,23 @@ class ProductImages(models.Model): #Color/Variants
     # thumbnail = ThumbnailerImageField(upload_to='product_images_thumbnails/', resize_source={'size': None, 'sharpen': True}, blank=True)
 
     def save(self, *args, **kwargs):
+
+        if self.pk:
+            # Fetch the current instance from the database
+            old_instance = ProductImages.objects.get(pk=self.pk)
+            # Check if the image has changed
+            if old_instance.image != self.image:
+                # Delete the old image file
+                if os.path.isfile(old_instance.image.path):
+                    os.remove(old_instance.image.path)
+
         super().save(*args, **kwargs)
 
         # Open the original image
         original_image = Image.open(self.image.path)
 
         # Set the quality (adjust as needed)
-        quality = 80
+        quality = 30
 
         # Save the image with adjusted quality
         original_image.save(self.image.path, quality=quality)
@@ -160,6 +170,29 @@ class LandingImage (models.Model):
     def __str__(self):
         return self.name
     
+
+    def save(self, *args, **kwargs):
+
+        if self.pk:
+            # Fetch the current instance from the database
+            old_instance = LandingImage.objects.get(pk=self.pk)
+            # Check if the image has changed
+            if old_instance.image != self.image:
+                # Delete the old image file
+                if os.path.isfile(old_instance.image.path):
+                    os.remove(old_instance.image.path)
+
+        super().save(*args, **kwargs)
+
+        # Open the original image
+        original_image = Image.open(self.image.path)
+
+        # Set the quality (adjust as needed)
+        quality = 30
+
+        # Save the image with adjusted quality
+        original_image.save(self.image.path, quality=quality)
+    
     class Meta:
         verbose_name = "LandingImage"
         verbose_name_plural = "LandingImages"
@@ -170,6 +203,31 @@ class CaroualImage (models.Model):
     def __str__(self):
         return self.name
     
+
+    def save(self, *args, **kwargs):
+
+
+        if self.pk:
+            # Fetch the current instance from the database
+            old_instance = CaroualImage.objects.get(pk=self.pk)
+            # Check if the image has changed
+            if old_instance.image != self.image:
+                # Delete the old image file
+                if os.path.isfile(old_instance.image.path):
+                    os.remove(old_instance.image.path)
+
+
+        super().save(*args, **kwargs)
+
+        # Open the original image
+        original_image = Image.open(self.image.path)
+
+        # Set the quality (adjust as needed)
+        quality = 30
+
+        # Save the image with adjusted quality
+        original_image.save(self.image.path, quality=quality)
+        
     class Meta:
         verbose_name = "CaroualImage"
         verbose_name_plural = "CaroualImages"
